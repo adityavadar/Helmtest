@@ -1,0 +1,21 @@
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  name: explorer
+  annotations:
+    kubernetes.io/ingress.class: nginx
+    kubernetes.io/tls-acme: 'false'
+spec:
+  rules:
+  - host: explorer.dappbox.io
+    http:
+      paths:
+      - path: /
+        backend:
+          serviceName: explorer-ui
+          servicePort: 5000
+  initContainers:
+    - name: init-wait-explorer
+      image: busybox
+      command: ['sh', '-c', 'until nslookup explorer-ui; do echo waiting for explorer-ui; sleep 2; done;']  
+

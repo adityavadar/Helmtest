@@ -1,0 +1,50 @@
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  annotations:
+    kompose.cmd: kompose convert -f docker-compose.yaml
+    kompose.version: 1.14.0 (fa706f2)
+  creationTimestamp: null
+  labels:
+    app: {{ template "ethereum.name" . }}
+    chart: {{ template "ethereum.chart" . }}
+    release: {{ .Release.Name }}
+    heritage: {{ .Release.Service }}
+    component: explorer-rest-api
+  name: explorer-rest-api
+spec:
+  replicas: 1
+  strategy: {}
+  template:
+    metadata:
+      creationTimestamp: null
+      labels:
+        io.kompose.service: rest
+    spec:
+      containers:
+      - env:
+        - name: EXPLORER_PORT
+          value: "8081"
+        - name: JAVA_OPTS
+        - name: MONGO_CLIENT_URI
+          value: mongodb://mongodb:28017
+        - name: MONGO_DB_NAME
+          value: blk-quorum-dev
+        - name: NODE_ENDPOINT
+          value: http://geth-tx:8545
+        - name: UI_IP
+          value: http://explorer.dappbox.io
+        image: blkio10/explorer-free:1.0.0
+        name: blk-explorer-free
+        ports:
+        - containerPort: 8081
+        resources: {}
+      restartPolicy: Always
+      initContainers:
+        - name: init-wait-mongodb
+          image: busybox
+          command: ['sh', '-c', 'until nslookup mongodb; do echo waiting for mongo; sleep 2; done;']
+        - name: init-wait-ui
+          image: busybox
+          command: ['sh', '-c', 'until nslookup explorer-ui; do echo waiting for explorer-ui; sleep 2; done;'] 
+status: {}

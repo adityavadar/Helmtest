@@ -1,0 +1,15 @@
+name: ethereum-helm-repo
+version: 0.1.1
+description: public DappBox Ethereum POA network Helm chart for Kubernetes
+keywords:
+- dappbox
+- ethereum
+- blockchain
+home: https://www.dappbox.io/
+sources:
+- https://github.com/AlphaDinoRC/dAppBoxService
+maintainers:
+- name: Aayush Anand
+  email: aayush.anand@rockchain.org
+icon: https://dappbox.io/img/logo.png 
+appVersion: v1

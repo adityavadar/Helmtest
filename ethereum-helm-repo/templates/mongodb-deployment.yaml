@@ -1,0 +1,37 @@
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: mongodb
+  annotations:
+    kompose.cmd: kompose convert -f docker-compose.yaml
+    kompose.version: 1.14.0 (fa706f2)
+  creationTimestamp: null
+  labels:
+    app: {{ template "ethereum.name" . }}
+    chart: {{ template "ethereum.chart" . }}
+    release: {{ .Release.Name }}
+    heritage: {{ .Release.Service }}
+    component: mongodb
+spec:
+  replicas: 1
+  strategy: {}
+  template:
+    metadata:
+      creationTimestamp: null
+      labels:
+        io.kompose.service: mongodb
+    spec:
+      containers:
+      - command:
+        - mongod
+        - --smallfiles
+        - --logpath=/dev/null
+        - --bind_ip
+        - 0.0.0.0
+        image: mongo:3.4.10
+        name: blk-mongodb-free
+        ports:
+        - containerPort: 27017
+        resources: {}
+      restartPolicy: Always
+status: {}
